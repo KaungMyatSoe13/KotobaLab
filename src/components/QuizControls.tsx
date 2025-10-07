@@ -1,15 +1,14 @@
 // src/components/QuizControls.tsx
 import React from "react";
 import { Play, RotateCcw, Home } from "lucide-react";
-
 interface QuizControlsProps {
   isStarted: boolean;
   isFinished: boolean;
   vocabLength: number;
   isLoading: boolean;
   onStart: () => void;
-  onReplay: () => void;
   onGoHome: () => void;
+  hasFile: boolean; // Add this new prop
 }
 
 export const QuizControls: React.FC<QuizControlsProps> = ({
@@ -18,9 +17,14 @@ export const QuizControls: React.FC<QuizControlsProps> = ({
   vocabLength,
   isLoading,
   onStart,
-  onReplay,
   onGoHome,
+  hasFile,
 }) => {
+  // Don't render anything if no file is uploaded and quiz hasn't started
+  if (!hasFile && !isStarted) {
+    return null;
+  }
+
   return (
     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8">
       <button
@@ -35,6 +39,7 @@ export const QuizControls: React.FC<QuizControlsProps> = ({
         )}
         {isStarted ? "Restart Quiz" : "Start Quiz"}
       </button>
+
       {isFinished ? (
         <button
           onClick={onGoHome}
@@ -45,16 +50,9 @@ export const QuizControls: React.FC<QuizControlsProps> = ({
           Go Back to Home
         </button>
       ) : null}
+
       {!isFinished && isStarted && (
         <>
-          <button
-            onClick={onReplay}
-            disabled={!isStarted}
-            className="hover:cursor-pointer flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-cyan-600/50 text-white px-6 py-3.5 rounded-xl text-sm sm:text-base font-bold hover:from-blue-600 hover:to-cyan-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-blue-500/50 disabled:shadow-none"
-          >
-            <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
-            Replay Audio
-          </button>
           <button
             onClick={onGoHome}
             className="hover:cursor-pointer flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-red-500 to-rose-600/50 text-white px-6 py-3.5 rounded-xl text-sm sm:text-base font-bold hover:from-red-600 hover:to-rose-700 transition-all duration-300 shadow-lg hover:shadow-red-500/50"

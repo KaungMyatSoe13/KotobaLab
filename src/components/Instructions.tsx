@@ -1,5 +1,6 @@
 // src/components/Instructions.tsx
 import React from "react";
+// import UploadButton from "./tempUploadButton";
 
 export const Instructions: React.FC = () => {
   return (
@@ -7,6 +8,7 @@ export const Instructions: React.FC = () => {
       <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">
         How to Use:
       </h2>
+      {/* <UploadButton /> */}
       <ol className="list-decimal list-inside space-y-1.5 sm:space-y-2 text-sm sm:text-base text-white/90">
         <li>
           Upload an Excel file with "Pronunciation", "Japanese Writing", and

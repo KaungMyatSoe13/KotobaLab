@@ -1,7 +1,7 @@
 // src/components/QuizCard.tsx
 import React from "react";
-import { Eye, ChevronRight, EyeOff } from "lucide-react";
-import type { VocabItem } from "../types";
+import { Eye, ChevronRight, EyeOff, RotateCcw } from "lucide-react";
+import type { VocabItem } from "../utils/types";
 
 interface QuizCardProps {
   currentWord: VocabItem;
@@ -12,6 +12,7 @@ interface QuizCardProps {
   onReveal: () => void;
   onNext: () => void;
   onHideAnswer: () => void;
+  onReplay: () => void; // Add this prop
 }
 
 export const QuizCard: React.FC<QuizCardProps> = ({
@@ -23,6 +24,7 @@ export const QuizCard: React.FC<QuizCardProps> = ({
   onReveal,
   onNext,
   onHideAnswer,
+  onReplay, // Destructure new prop
 }) => {
   return (
     <div className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 backdrop-blur-sm rounded-2xl p-6 sm:p-8 mb-6 border border-purple-500/20 flex-1 flex flex-col">
@@ -89,16 +91,28 @@ export const QuizCard: React.FC<QuizCardProps> = ({
             Reveal Answer
           </button>
         )}
+
         {!isFinished && (
-          <button
-            onClick={onNext}
-            className="hover:cursor-pointer flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-600/50 text-white px-6 py-3.5 rounded-xl text-sm sm:text-base font-bold hover:from-purple-600 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-purple-500/50"
-          >
-            Next Word
-            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
-          </button>
+          <>
+            <button
+              onClick={onReplay}
+              className="hover:cursor-pointer flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-cyan-600/50 text-white px-6 py-3.5 rounded-xl text-sm sm:text-base font-bold hover:from-blue-600 hover:to-cyan-700 transition-all duration-300 shadow-lg hover:shadow-blue-500/50"
+            >
+              <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
+              Replay Audio
+            </button>
+
+            <button
+              onClick={onNext}
+              className="hover:cursor-pointer flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-600/50 text-white px-6 py-3.5 rounded-xl text-sm sm:text-base font-bold hover:from-purple-600 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-purple-500/50"
+            >
+              Next Word
+              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
+          </>
         )}
       </div>
+
       {isFinished && (
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 sm:p-8 mb-6 shadow-xl border border-white/20 flex-1 flex flex-col items-center justify-center">
           <p className="text-center text-purple-200 mb-4 text-sm sm:text-base font-medium">

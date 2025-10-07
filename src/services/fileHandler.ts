@@ -1,6 +1,6 @@
 // src/fileHandler.ts
 import * as XLSX from "xlsx";
-import type { VocabItem } from "./types";
+import type { VocabItem } from "../utils/types";
 
 export const downloadTemplate = (): void => {
   const template = [
