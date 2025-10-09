@@ -29,7 +29,7 @@ function BookDetail() {
       const { details, lessons } = await fetchBookDetails(bookName);
 
       if (!details) {
-        setError("Book details not found");
+        setError("Book details are not found");
       } else {
         setBookDetails(details);
         setLessons(lessons);
