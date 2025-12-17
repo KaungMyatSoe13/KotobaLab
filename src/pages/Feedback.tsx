@@ -151,7 +151,7 @@ export const Feedback: React.FC<FeedbackProps> = ({ onClose }) => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-600/50 text-white px-6 py-4 rounded-xl font-bold hover:from-purple-600 hover:to-pink-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-purple-500/50"
+            className="hover:cursor-pointer w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-600/50 text-white px-6 py-4 rounded-xl font-bold hover:from-purple-600 hover:to-pink-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-purple-500/50"
           >
             {isSubmitting ? (
               <>

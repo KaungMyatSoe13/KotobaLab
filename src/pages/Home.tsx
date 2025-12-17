@@ -8,6 +8,8 @@ import { FileUpload } from "../components/FileUpload";
 import { QuizControls } from "../components/QuizControls";
 import { Instructions } from "../components/Instructions";
 import { QuizCard } from "../components/QuizCard";
+import { QuizCardHiragana } from "../components/QuizCardHiragana";
+import { BookOpen, Headphones } from "lucide-react";
 
 const clearAll = () => {
   sessionStorage.clear();
@@ -28,6 +30,9 @@ const JapaneseVocabQuiz: React.FC = () => {
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isFinished, setIsFinished] = useState<boolean>(false);
+  const [practiceMode, setPracticeMode] = useState<
+    "reading" | "listening" | null
+  >(null);
 
   // Persist state to storage
   useEffect(() => {
@@ -74,7 +79,21 @@ const JapaneseVocabQuiz: React.FC = () => {
     );
   };
 
-  const handleStart = (): void => {
+  const handleStartReadingMode = (): void => {
+    if (vocabList.length === 0) {
+      alert("Please upload a file first!");
+      return;
+    }
+    const indices = shuffleArray([...Array(vocabList.length).keys()]);
+    setShuffledIndices(indices);
+    setCurrentIndex(0);
+    setIsStarted(true);
+    setIsRevealed(false);
+    setIsFinished(false);
+    // speakWord(vocabList[indices[0]].pronunciation);
+  };
+
+  const handleStartListeningMode = (): void => {
     if (vocabList.length === 0) {
       alert("Please upload a file first!");
       return;
@@ -95,7 +114,18 @@ const JapaneseVocabQuiz: React.FC = () => {
     }
   };
 
-  const handleNext = (): void => {
+  const handleNextReadingMode = (): void => {
+    setIsRevealed(false);
+    if (currentIndex < shuffledIndices.length - 1) {
+      const nextIdx = currentIndex + 1;
+      setCurrentIndex(nextIdx);
+      // speakWord(vocabList[shuffledIndices[nextIdx]].pronunciation);
+    } else {
+      setIsFinished(true);
+    }
+  };
+
+  const handleNextListeningMode = (): void => {
     setIsRevealed(false);
     if (currentIndex < shuffledIndices.length - 1) {
       const nextIdx = currentIndex + 1;
@@ -115,6 +145,7 @@ const JapaneseVocabQuiz: React.FC = () => {
     setIsFinished(false);
     setCurrentIndex(0);
     setIsRevealed(false);
+    setPracticeMode(null);
     clearAll();
   };
 
@@ -122,7 +153,10 @@ const JapaneseVocabQuiz: React.FC = () => {
     isStarted,
     isRevealed,
     isFinished,
-    onNext: handleNext,
+    onNext:
+      practiceMode === "reading"
+        ? handleNextReadingMode
+        : handleNextListeningMode,
     onReveal: handleReveal,
     onReplay: handleReplay,
     onHide: () => setIsRevealed(false),
@@ -155,30 +189,84 @@ const JapaneseVocabQuiz: React.FC = () => {
             />
           )}
 
+          {fileName !== "" && (
+            <div
+              className={`backdrop-blur-md border-2 text-white p-4 rounded-xl shadow-lg mb-4 ${
+                practiceMode
+                  ? "bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border-cyan-400/30"
+                  : "bg-white/5 border-white/20"
+              }`}
+            >
+              {" "}
+              <div className="flex items-center justify-center gap-3">
+                {practiceMode === "reading" ? (
+                  <>
+                    <BookOpen className="w-6 h-6 text-cyan-400" />
+                    <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-300">
+                      Reading Practice Mode
+                    </span>
+                  </>
+                ) : practiceMode === "listening" ? (
+                  <>
+                    <Headphones className="w-6 h-6 text-purple-400" />
+                    <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-pink-300">
+                      Listening Practice Mode
+                    </span>
+                  </>
+                ) : practiceMode === null ? (
+                  <span className="text-lg font-bold text-gray-400">
+                    Select Practice Mode Below
+                  </span>
+                ) : null}
+              </div>
+            </div>
+          )}
+
           <QuizControls
             isStarted={isStarted}
             isFinished={isFinished}
             vocabLength={vocabList.length}
             isLoading={isLoading}
-            onStart={handleStart}
+            onStart={
+              practiceMode === "reading"
+                ? handleStartReadingMode
+                : handleStartListeningMode
+            }
             onGoHome={handleGoHome}
             hasFile={fileName !== ""}
+            practiceMode={practiceMode} // Use the state variable
+            onSelectMode={setPracticeMode} // Pass the setter function
           />
 
           {!isStarted && <Instructions />}
 
           {isStarted && currentWord && (
-            <QuizCard
-              currentWord={currentWord}
-              currentIndex={currentIndex}
-              totalWords={vocabList.length}
-              isRevealed={isRevealed}
-              isFinished={isFinished}
-              onReplay={handleReplay}
-              onReveal={handleReveal}
-              onNext={handleNext}
-              onHideAnswer={() => setIsRevealed(false)}
-            />
+            <>
+              {practiceMode === "reading" ? (
+                <QuizCardHiragana
+                  currentWord={currentWord}
+                  currentIndex={currentIndex}
+                  totalWords={vocabList.length}
+                  isRevealed={isRevealed}
+                  isFinished={isFinished}
+                  onReveal={handleReveal}
+                  onNext={handleNextReadingMode}
+                  onHideAnswer={() => setIsRevealed(false)}
+                />
+              ) : (
+                <QuizCard
+                  currentWord={currentWord}
+                  currentIndex={currentIndex}
+                  totalWords={vocabList.length}
+                  isRevealed={isRevealed}
+                  isFinished={isFinished}
+                  onReveal={handleReveal}
+                  onNext={handleNextListeningMode}
+                  onReplay={handleReplay}
+                  onHideAnswer={() => setIsRevealed(false)}
+                />
+              )}
+            </>
           )}
 
           {vocabList.length > 0 && !isStarted && (

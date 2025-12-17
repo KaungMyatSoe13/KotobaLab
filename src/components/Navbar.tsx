@@ -20,7 +20,13 @@ const Navbar = () => {
               to="/"
               className="text-gray-700 hover:text-indigo-600 font-medium"
             >
-              Home
+              Vocabs
+            </Link>
+            <Link
+              to="/kanji"
+              className="text-gray-700 hover:text-indigo-600 font-medium"
+            >
+              Kanji
             </Link>
             <Link
               to="/books"

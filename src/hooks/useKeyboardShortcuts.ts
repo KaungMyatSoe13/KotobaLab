@@ -7,7 +7,7 @@ interface UseKeyboardShortcutsProps {
   isFinished: boolean;
   onNext: () => void;
   onReveal: () => void;
-  onReplay: () => void;
+  onReplay?: () => void;
   onHide: () => void;
 }
 
@@ -40,7 +40,7 @@ export const useKeyboardShortcuts = ({
 
       if (e.key === "r" || e.key === "R") {
         e.preventDefault();
-        onReplay();
+        // onReplay();
       }
 
       if (e.key === "h" || e.key === "H") {

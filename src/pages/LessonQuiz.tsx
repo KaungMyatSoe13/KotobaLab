@@ -9,6 +9,7 @@ import { Loader2 } from "lucide-react";
 import { Instructions } from "../components/Instructions";
 import { lessonStorage } from "../utils/storage";
 import { fetchLessonsVocabulary } from "../services/booksService";
+import { QuizCardHiragana } from "../components/QuizCardHiragana";
 
 const LessonQuiz: React.FC = () => {
   const { bookName } = useParams<{ bookName: string }>();
@@ -42,6 +43,9 @@ const LessonQuiz: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [selectedLessons] = useState<number[]>(initialSelectedLessons);
+  const [practiceMode, setPracticeMode] = useState<
+    "reading" | "listening" | null
+  >(null);
 
   // Persist state to storage
   useEffect(() => {
@@ -109,7 +113,22 @@ const LessonQuiz: React.FC = () => {
     }
   };
 
-  const handleStart = (): void => {
+  const handleStartReadingMode = (): void => {
+    if (vocabList.length === 0) {
+      alert("No vocabulary loaded!");
+      return;
+    }
+    const indices = shuffleArray([...Array(vocabList.length).keys()]);
+    setShuffledIndices(indices);
+    setCurrentIndex(0);
+    setIsStarted(true);
+    setIsRevealed(false);
+    setIsFinished(false);
+    //close speakword if dont want sound
+    // speakWord(vocabList[indices[0]].pronunciation);
+  };
+
+  const handleStartListeningMode = (): void => {
     if (vocabList.length === 0) {
       alert("No vocabulary loaded!");
       return;
@@ -130,7 +149,19 @@ const LessonQuiz: React.FC = () => {
     }
   };
 
-  const handleNext = (): void => {
+  const handleNextReadingMode = (): void => {
+    setIsRevealed(false);
+    if (currentIndex < shuffledIndices.length - 1) {
+      const nextIdx = currentIndex + 1;
+      setCurrentIndex(nextIdx);
+      //close speakword if dont want sound
+      // speakWord(vocabList[shuffledIndices[nextIdx]].pronunciation);
+    } else {
+      setIsFinished(true);
+    }
+  };
+
+  const handleNextListeningMode = (): void => {
     setIsRevealed(false);
     if (currentIndex < shuffledIndices.length - 1) {
       const nextIdx = currentIndex + 1;
@@ -154,7 +185,10 @@ const LessonQuiz: React.FC = () => {
     isStarted,
     isRevealed,
     isFinished,
-    onNext: handleNext,
+    onNext:
+      practiceMode === "reading"
+        ? handleNextReadingMode
+        : handleNextListeningMode,
     onReveal: handleReveal,
     onReplay: handleReplay,
     onHide: () => setIsRevealed(false),
@@ -197,9 +231,15 @@ const LessonQuiz: React.FC = () => {
             isFinished={isFinished}
             vocabLength={vocabList.length}
             isLoading={isLoading}
-            onStart={handleStart}
+            onStart={
+              practiceMode === "reading"
+                ? handleStartReadingMode
+                : handleStartListeningMode
+            }
             onGoHome={handleGoHome}
             hasFile={true}
+            practiceMode={practiceMode} // Use the state variable
+            onSelectMode={setPracticeMode} // Pass the setter function
           />
 
           {!isStarted && !isFinished && <Instructions />}
@@ -216,17 +256,32 @@ const LessonQuiz: React.FC = () => {
           )}
 
           {isStarted && currentWord && (
-            <QuizCard
-              currentWord={currentWord}
-              currentIndex={currentIndex}
-              totalWords={vocabList.length}
-              isRevealed={isRevealed}
-              isFinished={isFinished}
-              onReplay={handleReplay}
-              onReveal={handleReveal}
-              onNext={handleNext}
-              onHideAnswer={() => setIsRevealed(false)}
-            />
+            <>
+              {practiceMode === "reading" ? (
+                <QuizCardHiragana
+                  currentWord={currentWord}
+                  currentIndex={currentIndex}
+                  totalWords={vocabList.length}
+                  isRevealed={isRevealed}
+                  isFinished={isFinished}
+                  onReveal={handleReveal}
+                  onNext={handleNextReadingMode}
+                  onHideAnswer={() => setIsRevealed(false)}
+                />
+              ) : (
+                <QuizCard
+                  currentWord={currentWord}
+                  currentIndex={currentIndex}
+                  totalWords={vocabList.length}
+                  isRevealed={isRevealed}
+                  isFinished={isFinished}
+                  onReveal={handleReveal}
+                  onNext={handleNextListeningMode}
+                  onReplay={handleReplay}
+                  onHideAnswer={() => setIsRevealed(false)}
+                />
+              )}
+            </>
           )}
         </div>
       </div>

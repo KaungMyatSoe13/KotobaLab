@@ -1,6 +1,6 @@
 // src/components/QuizCard.tsx
 import React from "react";
-import { Eye, ChevronRight, EyeOff, RotateCcw } from "lucide-react";
+import { Eye, ChevronRight, EyeOff } from "lucide-react";
 import type { VocabItem } from "../utils/types";
 
 interface QuizCardProps {
@@ -12,10 +12,9 @@ interface QuizCardProps {
   onReveal: () => void;
   onNext: () => void;
   onHideAnswer: () => void;
-  onReplay: () => void; // Add this prop
 }
 
-export const QuizCard: React.FC<QuizCardProps> = ({
+export const QuizCardHiragana: React.FC<QuizCardProps> = ({
   currentWord,
   currentIndex,
   totalWords,
@@ -24,15 +23,21 @@ export const QuizCard: React.FC<QuizCardProps> = ({
   onReveal,
   onNext,
   onHideAnswer,
-  onReplay, // Destructure new prop
 }) => {
   return (
-    <div className="bg-gradient-to-br from-purple-900/30 justify-center to-pink-900/30 backdrop-blur-sm rounded-2xl p-6 sm:p-8 mb-6 border border-purple-500/20 flex-1 flex flex-col">
+    <div className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 backdrop-blur-sm rounded-2xl p-6 sm:p-8 mb-6 border border-purple-500/20 flex-1 flex flex-col">
       {!isFinished && (
         <div className="text-center mb-6">
           <p className="text-sm sm:text-base text-purple-300/80 mb-3 font-medium">
             Word {currentIndex + 1} of {totalWords}
           </p>
+
+          {/* Display hiragana word */}
+          <div className="mb-4">
+            <p className="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
+              {currentWord.japanese}
+            </p>
+          </div>
 
           <div className="h-2.5 bg-white/10 rounded-full overflow-hidden">
             <div
@@ -85,7 +90,7 @@ export const QuizCard: React.FC<QuizCardProps> = ({
         {!isRevealed && !isFinished && (
           <button
             onClick={onReveal}
-            className="hover:cursor-pointer flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600/20 to-purple-800/20 hover:from-purple-500/30 hover:to-purple-700/30 backdrop-blur-md border border-cyan-400/30 hover:border-cyan-300/50 text-cyan-200 px-4 py-3 rounded-xl transition-all duration-300 font-semibold text-sm sm:text-base"
+            className="hover:cursor-pointer flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600/20 to-purple-800/20 hover:from-cyan-500/30 hover:to-cyan-700/30 backdrop-blur-md border border-cyan-400/30 hover:border-cyan-300/50 text-cyan-200 px-4 py-3 rounded-xl transition-all duration-300 font-semibold text-sm sm:text-base"
           >
             <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
             Reveal Answer
@@ -93,28 +98,18 @@ export const QuizCard: React.FC<QuizCardProps> = ({
         )}
 
         {!isFinished && (
-          <>
-            <button
-              onClick={onReplay}
-              className="hover:cursor-pointer flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600/20 to-blue-800/20 hover:from-blue-500/30 hover:to-blue-700/30 backdrop-blur-md border border-cyan-400/30 hover:border-cyan-300/50 text-cyan-200 px-4 py-3 rounded-xl transition-all duration-300 font-semibold text-sm sm:text-base"
-            >
-              <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
-              Replay Audio
-            </button>
-
-            <button
-              onClick={onNext}
-              className="hover:cursor-pointer flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-600/20 to-cyan-800/20 hover:from-cyan-500/30 hover:to-cyan-700/30 backdrop-blur-md border border-cyan-400/30 hover:border-cyan-300/50 text-cyan-200 px-4 py-3 rounded-xl transition-all duration-300 font-semibold text-sm sm:text-base"
-            >
-              Next Word
-              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
-            </button>
-          </>
+          <button
+            onClick={onNext}
+            className="hover:cursor-pointer flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600/20 to-blue-800/20 hover:from-cyan-500/30 hover:to-cyan-700/30 backdrop-blur-md border border-cyan-400/30 hover:border-cyan-300/50 text-cyan-200 px-4 py-3 rounded-xl transition-all duration-300 font-semibold text-sm sm:text-base"
+          >
+            Next Word
+            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+          </button>
         )}
       </div>
 
       {isFinished && (
-        <div className="">
+        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 sm:p-8 mb-6 shadow-xl border border-white/20 flex-1 flex flex-col items-center justify-center">
           <p className="text-center text-purple-200 mb-4 text-sm sm:text-base font-medium">
             Congratulations 🎉
           </p>
@@ -122,7 +117,7 @@ export const QuizCard: React.FC<QuizCardProps> = ({
             You did it! ✨
           </div>
           <p className="text-center text-purple-300/80 text-sm sm:text-base">
-            You completed all {totalWords} words!
+            You completed all {totalWords} kanji characters!
           </p>
         </div>
       )}
