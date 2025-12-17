@@ -12,6 +12,7 @@ import {
   Languages,
 } from "lucide-react";
 import { fetchKanjiByLevel, type KanjiItem } from "../services/booksService";
+import { kanjiStorage } from "../utils/kanjiStorage";
 
 const shuffleArray = <T,>(array: T[]): T[] => {
   const newArray = [...array];
@@ -32,24 +33,74 @@ interface QuizKanjiItem {
 function KanjiDetail() {
   const { level } = useParams<{ level: string }>();
   const navigate = useNavigate();
-  const [kanjiList, setKanjiList] = useState<KanjiItem[]>([]);
+  const [kanjiList, setKanjiList] = useState<KanjiItem[]>(
+    kanjiStorage.getKanjiList()
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [practiceMode, setPracticeMode] = useState<
     "kanjiToMeaning" | "meaningToKanji"
-  >("kanjiToMeaning");
+  >(kanjiStorage.getPracticeMode());
 
   // Quiz states
-  const [isQuizStarted, setIsQuizStarted] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isRevealed, setIsRevealed] = useState(false);
-  const [shuffledIndices, setShuffledIndices] = useState<number[]>([]);
-  const [isFinished, setIsFinished] = useState(false);
-  const [quizKanjiList, setQuizKanjiList] = useState<QuizKanjiItem[]>([]);
+  const [isQuizStarted, setIsQuizStarted] = useState(
+    kanjiStorage.getIsQuizStarted()
+  );
+  const [currentIndex, setCurrentIndex] = useState(
+    kanjiStorage.getCurrentIndex()
+  );
+  const [isRevealed, setIsRevealed] = useState(kanjiStorage.getIsRevealed());
+  const [shuffledIndices, setShuffledIndices] = useState<number[]>(
+    kanjiStorage.getShuffledIndices()
+  );
+  const [isFinished, setIsFinished] = useState(kanjiStorage.getIsFinished());
+  const [quizKanjiList, setQuizKanjiList] = useState<QuizKanjiItem[]>(
+    kanjiStorage.getQuizKanjiList()
+  );
 
   useEffect(() => {
     loadKanji();
   }, [level]);
+
+  // Persist level
+  useEffect(() => {
+    if (level) {
+      kanjiStorage.setLevel(level);
+    }
+  }, [level]);
+
+  // Persist all states
+  useEffect(() => {
+    kanjiStorage.setKanjiList(kanjiList);
+  }, [kanjiList]);
+
+  useEffect(() => {
+    kanjiStorage.setQuizKanjiList(quizKanjiList);
+  }, [quizKanjiList]);
+
+  useEffect(() => {
+    kanjiStorage.setCurrentIndex(currentIndex);
+  }, [currentIndex]);
+
+  useEffect(() => {
+    kanjiStorage.setIsQuizStarted(isQuizStarted);
+  }, [isQuizStarted]);
+
+  useEffect(() => {
+    kanjiStorage.setIsRevealed(isRevealed);
+  }, [isRevealed]);
+
+  useEffect(() => {
+    kanjiStorage.setShuffledIndices(shuffledIndices);
+  }, [shuffledIndices]);
+
+  useEffect(() => {
+    kanjiStorage.setIsFinished(isFinished);
+  }, [isFinished]);
+
+  useEffect(() => {
+    kanjiStorage.setPracticeMode(practiceMode);
+  }, [practiceMode]);
 
   const loadKanji = async () => {
     try {
@@ -103,6 +154,7 @@ function KanjiDetail() {
     setCurrentIndex(0);
     setIsRevealed(false);
     setShuffledIndices([]);
+    kanjiStorage.clearAll();
   };
 
   const handleRestart = (): void => {

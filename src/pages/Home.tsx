@@ -24,6 +24,7 @@ const JapaneseVocabQuiz: React.FC = () => {
   );
   const [isStarted, setIsStarted] = useState<boolean>(storage.getIsStarted());
   const [isRevealed, setIsRevealed] = useState<boolean>(false);
+
   const [fileName, setFileName] = useState<string>(storage.getFileName());
   const [shuffledIndices, setShuffledIndices] = useState<number[]>(
     storage.getShuffledIndices()
@@ -32,7 +33,7 @@ const JapaneseVocabQuiz: React.FC = () => {
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [practiceMode, setPracticeMode] = useState<
     "reading" | "listening" | null
-  >(null);
+  >(storage.getPracticeMode());
 
   // Persist state to storage
   useEffect(() => {
@@ -54,6 +55,18 @@ const JapaneseVocabQuiz: React.FC = () => {
   useEffect(() => {
     storage.setShuffledIndices(shuffledIndices);
   }, [shuffledIndices]);
+
+  useEffect(() => {
+    storage.setPracticeMode(practiceMode);
+  }, [practiceMode]);
+
+  useEffect(() => {
+    storage.setIsFinished(isFinished);
+  }, [isFinished]);
+
+  useEffect(() => {
+    storage.setIsRevealed(isRevealed);
+  }, [isRevealed]);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const file = e.target.files?.[0];
@@ -146,7 +159,10 @@ const JapaneseVocabQuiz: React.FC = () => {
     setCurrentIndex(0);
     setIsRevealed(false);
     setPracticeMode(null);
-    clearAll();
+    vocabList.length === 0;
+    currentIndex === 0;
+    fileName === "";
+    shuffledIndices.length === 0;
   };
 
   useKeyboardShortcuts({

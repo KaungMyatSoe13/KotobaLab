@@ -45,6 +45,39 @@ export const storage = {
   setShuffledIndices: (indices: number[]): void => {
     sessionStorage.setItem("shuffledIndices", JSON.stringify(indices));
   },
+
+  getPracticeMode: (): "reading" | "listening" | null => {
+    return sessionStorage.getItem("practiceMode") as
+      | "reading"
+      | "listening"
+      | null;
+  },
+
+  setPracticeMode: (mode: "reading" | "listening" | null): void => {
+    if (mode === null) {
+      sessionStorage.removeItem("practiceMode");
+    } else {
+      sessionStorage.setItem("practiceMode", mode);
+    }
+  },
+
+  getIsFinished: (): boolean => {
+    const saved = sessionStorage.getItem("isFinished");
+    return saved ? JSON.parse(saved) : false;
+  },
+
+  setIsFinished: (value: boolean): void => {
+    sessionStorage.setItem("isFinished", JSON.stringify(value));
+  },
+
+  getIsRevealed: (): boolean => {
+    const saved = sessionStorage.getItem("isRevealed");
+    return saved ? JSON.parse(saved) : false;
+  },
+
+  setIsRevealed: (value: boolean): void => {
+    sessionStorage.setItem("isRevealed", JSON.stringify(value));
+  },
 };
 
 export const lessonStorage = {

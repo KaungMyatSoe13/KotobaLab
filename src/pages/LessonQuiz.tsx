@@ -7,7 +7,7 @@ import { QuizControls } from "../components/QuizControls";
 import { QuizCard } from "../components/QuizCard";
 import { Loader2 } from "lucide-react";
 import { Instructions } from "../components/Instructions";
-import { lessonStorage } from "../utils/storage";
+import { lessonStorage, storage } from "../utils/storage";
 import { fetchLessonsVocabulary } from "../services/booksService";
 import { QuizCardHiragana } from "../components/QuizCardHiragana";
 
@@ -45,9 +45,20 @@ const LessonQuiz: React.FC = () => {
   const [selectedLessons] = useState<number[]>(initialSelectedLessons);
   const [practiceMode, setPracticeMode] = useState<
     "reading" | "listening" | null
-  >(null);
+  >(storage.getPracticeMode());
 
   // Persist state to storage
+  useEffect(() => {
+    storage.setPracticeMode(practiceMode);
+  }, [practiceMode]);
+
+  useEffect(() => {
+    storage.setIsFinished(isFinished);
+  }, [isFinished]);
+
+  useEffect(() => {
+    storage.setIsRevealed(isRevealed);
+  }, [isRevealed]);
   useEffect(() => {
     lessonStorage.setVocabList(vocabList);
   }, [vocabList]);
