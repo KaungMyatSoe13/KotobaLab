@@ -11,9 +11,9 @@ import { QuizCard } from "../components/QuizCard";
 import { QuizCardHiragana } from "../components/QuizCardHiragana";
 import { BookOpen, Headphones } from "lucide-react";
 
-const clearAll = () => {
-  sessionStorage.clear();
-};
+// const clearAll = () => {
+//   sessionStorage.clear();
+// };
 
 const JapaneseVocabQuiz: React.FC = () => {
   const [vocabList, setVocabList] = useState<VocabItem[]>(
