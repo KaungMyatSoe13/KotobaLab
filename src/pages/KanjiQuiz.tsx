@@ -1,15 +1,7 @@
 //import>kanji-quiz
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  BookOpen,
-  Languages,
-  Eye,
-  EyeOff,
-  Home,
-  RotateCcw,
-  X,
-} from "lucide-react";
+import { BookOpen, Languages, Eye, RotateCcw, X } from "lucide-react";
 
 interface KanjiItem {
   kanji: string;
